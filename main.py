@@ -102,4 +102,4 @@ async def background_task():
 
 
 client.loop.create_task(background_task())
-client.run(os.getenv("TOKEN"))
+client.run(TOKEN)
