@@ -1,18 +1,17 @@
 
 from datetime import datetime, time, timedelta
+from distutils.command.config import config
 from discord.ext import commands
 from func import geladeira
-from dotenv import load_dotenv
-import asyncio, discord, os, func
+import asyncio, discord, func
 
 
-load_dotenv()
 
 horarios = [time(9,00,0),time(9,20,0),time(14,20,0),time(14,50,0),
             time(18,20,0),time(18,50,0),time(21,20,0),time(21,50,0)]
 
 client = commands.Bot(command_prefix = "&", case_insensitive = True)
-
+TOKEN = config("TOKEN")
 
 @client.event
 async def on_ready():
