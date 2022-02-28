@@ -1,6 +1,6 @@
 
 from datetime import datetime, time, timedelta
-from distutils.command.config import config
+from decouple import config
 from discord.ext import commands
 from func import geladeira
 import asyncio, discord, func
