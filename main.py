@@ -12,7 +12,7 @@ horarios = [time(9,00,0),time(9,20,0),time(14,20,0),time(14,50,0),
             time(18,20,0),time(18,50,0),time(21,20,0),time(21,50,0)]
 
 client = commands.Bot(command_prefix = "&", case_insensitive = True)
-token = 'ODY1Mjg0NDE1NjIxOTU1NTk0.YPBw6A.sfiBcNbFyzJzBMlDmMXVSgwEGtE'
+
 
 @client.event
 async def on_ready():
