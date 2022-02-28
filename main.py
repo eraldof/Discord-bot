@@ -3,16 +3,17 @@ from datetime import datetime, time, timedelta
 from keep_alive import keep_alive
 from discord.ext import commands
 from func import geladeira
-import asyncio
-import discord
-import func
+from dotenv import load_dotenv
+import asyncio, discord, os, func
 
+
+load_dotenv()
 
 horarios = [time(9,00,0),time(9,20,0),time(14,20,0),time(14,50,0),
             time(18,20,0),time(18,50,0),time(21,20,0),time(21,50,0)]
 
 client = commands.Bot(command_prefix = "&", case_insensitive = True)
-token = ''
+token = 'ODY1Mjg0NDE1NjIxOTU1NTk0.YPBw6A.sfiBcNbFyzJzBMlDmMXVSgwEGtE'
 
 @client.event
 async def on_ready():
@@ -45,7 +46,7 @@ async def potes(ctx, current: int, target: int, tier: str):
 
 @client.command(usage="<nome da food> <quantidade>",
                 description="Apenas mostra os ingredientes e suas respectivas quantidades!\n" 
-                "Food disponíveis: Ostra, Paella, Atum")
+                "Food disponíveis: Ostra, Paella, Atum, Wagyu")
 async def food(ctx, comida:str, quantidade: int):
     comida = comida.lower()
     if quantidade > 0 and comida in geladeira.keys():
@@ -102,4 +103,4 @@ async def background_task():
 
 keep_alive()
 client.loop.create_task(background_task())
-client.run(token)
+client.run(os.getenv("TOKEN"))

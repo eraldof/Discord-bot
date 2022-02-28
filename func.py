@@ -37,7 +37,20 @@ geladeira = {
         'Arroz':2,
         'Azeite':1,
         'Custo': 2460
-    }
+    },
+    'wagyu':{
+        'Bife Cru Premium': 6,
+        'Folhas verdes': 4, 
+        'Limão': 2,
+        'Vinho Branco': 1,
+        'Cogumelo': 5,
+        'Trufa Branca': 2,
+        'Sal': 4,
+        'Pimenta': 3,
+        'Alho': 2,
+        'Azeite': 6,
+        'Cebola': 3,
+        'Custo': 2805}  
 }
 
 ################################################################################################################
