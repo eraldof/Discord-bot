@@ -1,6 +1,5 @@
 
 from datetime import datetime, time, timedelta
-from keep_alive import keep_alive
 from discord.ext import commands
 from func import geladeira
 from dotenv import load_dotenv
@@ -101,6 +100,6 @@ async def background_task():
     seconds = (amanha - agora).total_seconds()
     await asyncio.sleep(seconds)
 
-keep_alive()
+
 client.loop.create_task(background_task())
 client.run(os.getenv("TOKEN"))
