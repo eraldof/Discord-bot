@@ -1,6 +1,4 @@
-
 from datetime import datetime, time, timedelta
-from decouple import config
 from discord.ext import commands
 from func import geladeira
 import asyncio, discord, func
@@ -11,19 +9,21 @@ horarios = [time(9,00,0),time(9,20,0),time(14,20,0),time(14,50,0),
             time(18,20,0),time(18,50,0),time(21,20,0),time(21,50,0)]
 
 client = commands.Bot(command_prefix = "&", case_insensitive = True)
-TOKEN = config("TOKEN")
+
+TOKEN =  ''
 
 @client.event
 async def on_ready():
     print("Bot online...")
 
 ########################################################################### Potes
+
 @client.command(usage="<level atual> <level desejado> <tier>", 
                 description="Calcula a quantidade de poções necessárias para atingir o level desejado considerando que você está no início do level. \nTIERS: diamante, ouro, prata, bronze" )            
 async def potes(ctx, current: int, target: int, tier: str):
     tier = tier.lower()
     if current >= 1 and target <= 110 and tier in ['bronze', 'diamante','ouro','prata']:
-        potes = func.getPots(current,target,tier)
+        potes = func.getlvl(current,target,tier)
         embed = discord.Embed(title = "Quantidade de potes necessárias:",
         description = "Potes grandes: {0}\nPotes médias: {1}\nPotes pequenas: {2}".format(potes[0],potes[1],potes[2]),
         colour = discord.Colour.from_rgb(28,28,28))
@@ -53,6 +53,36 @@ async def food(ctx, comida:str, quantidade: int):
     else:
       await ctx.send("Verifique se os argumentos estão corretos! Digite &help food")
 
+
+######################################## Noland
+
+
+@client.command(usage="<imagem> ", 
+                description="Digite exatamente uma das opções abaixo:\ntigre, dragao, urso, caveira, leao, escorpiao, lagarto, kanji, pantera, fenix.")
+async def noland(ctx, message: str):
+  msg = message.lower()
+  if msg  == 'tigre':
+    await ctx.send('https://imgur.com/Cq6a2g7')
+  elif msg == 'dragao':
+    await ctx.send('https://imgur.com/MPjUYHy')
+  elif msg == 'urso':
+    await ctx.send('https://cdn.discordapp.com/attachments/868216153292566551/885223390699470898/unknown.png')
+  elif msg == 'caveira':
+   await ctx.send('https://imgur.com/MM8lnc7')
+  elif msg == 'leao':
+    await ctx.send('https://imgur.com/qunFvU4')
+  elif msg == 'escorpiao':
+    await ctx.send('https://imgur.com/DzUc8xY')
+  elif msg == 'lagarto':
+    await ctx.send('https://imgur.com/vikdYKj')
+  elif msg == 'kanji':
+    await ctx.send('https://cdn.discordapp.com/attachments/868216153292566551/885701524448243712/unknown.png')
+  elif msg == 'pantera':
+    await ctx.send('https://imgur.com/CMY0fsx')
+  elif msg == 'fenix':
+    await ctx.send('https://imgur.com/zrTPl9m')
+
+
 ################################### Errors 
 
 @food.error
@@ -66,15 +96,21 @@ async def potes_error(ctx, error):
   if isinstance(error, commands.BadArgument):
     await ctx.send("Argumentos invalidos, tente `&help potes`")
 
+
+@noland.error
+async def noland_error(ctx, error):
+  if isinstance(error, commands.BadArgument):
+    await ctx.send("Argumentos invalidos, tente `&help noland`")
+
 ################################################ loop + webscrapper
 async def evento():  
   await client.wait_until_ready()  
-  channel = client.get_channel(865285226435837982)
+  ctx = client.get_ctx(865285226435837982)
   link = func.webscrapper()[0]
   hora = func.webscrapper()[1]
   embed = discord.Embed(title = "Próximo evento:", description = hora, colour = discord.Colour.red())
   embed.set_image(url=link)
-  await channel.send(embed=embed)
+  await ctx.send(embed=embed)
 
 @client.event
 async def background_task():

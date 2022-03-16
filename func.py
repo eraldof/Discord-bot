@@ -1,3 +1,4 @@
+from math import ceil, trunc
 import requests
 from bs4 import BeautifulSoup
 
@@ -56,6 +57,7 @@ geladeira = {
 ################################################################################################################
 
 
+
 def webscrapper():
     req = requests.get("https://wiki.gla.com.br/")
 
@@ -67,67 +69,9 @@ def webscrapper():
 
     return [next_event.img['src'], next_event.span['data-clock']]
 
-def getExp(lv):
-    lv = lv-1
-    return ((50 * lv * lv * lv) - (150 * lv * lv) + (400 * lv)) / 3
-
-def getLvl(current: int, grande: int, media: int, pequena: int, tier: str):
-    if tier == 'bronze':
-        multiplicador = 3
-    elif tier == 'prata':
-        multiplicador = 2
-    elif tier == 'ouro':
-        multiplicador = 1
-    elif tier == 'diamante':
-        multiplicador = 0.5
-    level = None
-    exp_add = (grande*100000) + (media*10000) + (pequena*1000)
-    total_exp = current+(exp_add*multiplicador)
-    for i in range(0, 1001):
-        if total_exp >= getExp(i) and total_exp <= getExp(i+1):
-            level = i
-            exp_to_up = getExp(i+1) - getExp(i)
-            exceeded = total_exp - getExp(i)
-            percent_lvl = (1 - exceeded / exp_to_up) * 100
-            print(f"""```Exp Atingida: {total_exp}
-                    Level Atingido: {level}
-                    Exp P/ Upar: {exp_to_up-exceeded:0.0f}
-                    Porcentagem P/ Upar: {percent_lvl:0.0f}```""")
-    return (f"""Level maior que 1000.""")
-
-def getPots(current: int, target: int, tier: str):
-    if tier == 'bronze':
-        multiplicador = 3
-    elif tier == 'prata':
-        multiplicador = 2
-    elif tier == 'ouro':
-        multiplicador = 1
-    elif tier == 'diamante':
-        multiplicador = 0.5
-
-    pots = {'small': 1000*multiplicador, 'med': 10000 *
-            multiplicador, 'big': 100000*multiplicador}
-    true_needed = getExp(target)-getExp(current)
-    needed = true_needed
-    big_needed = 0
-    med_needed = 0
-    small_needed = 0
-    while 1:
-        if needed > pots['big']:
-            big_needed += 1
-            needed -= pots['big']
-        elif needed > pots['med']:
-            med_needed += 1
-            needed -= pots['med']
-        elif needed > 0:
-            small_needed += 1
-            needed -= pots['small']
-        else:
-            break
-    return [big_needed, med_needed, small_needed]
 
 def getFood(food: str, quantidade: int):
-    food = food.lower()
+    food = food
 
     if food in geladeira.keys():
         resultado = dict()
@@ -142,3 +86,34 @@ def getFood(food: str, quantidade: int):
 
     else:
         return "Erro"
+
+
+def getlvl(current: int, desired: int, tier: str):
+    lvc = current - 1
+    lvd = desired - 1
+    lvlc = ((50 * lvc * lvc * lvc) - (150 * lvc * lvc) + (400 * lvc)) / 3
+    lvld = ((50 * lvd * lvd * lvd) - (150 * lvd * lvd) + (400 * lvd)) / 3
+
+    needed = lvld - lvlc
+
+    tier = tier.lower()
+    if tier == 'bronze':
+        multiplier = 3
+    elif tier == 'prata':
+        multiplier = 2
+    elif tier == 'ouro':
+        multiplier = 1
+    elif tier == 'diamante':
+        multiplier = 0.5
+
+    pot ={
+            'small': 1000*multiplier, 
+            'med': 10000*multiplier, 
+            'big': 100000*multiplier
+         }
+
+    big_needed = trunc(needed / pot['big'])
+    med_needed = trunc(needed % pot['big'] / pot['med'])
+    small_needed = ceil(needed % pot['med'] / pot['small'])
+
+    return [big_needed, med_needed, small_needed] 
